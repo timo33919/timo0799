@@ -26,8 +26,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v2
+   
       # Runs a single command using the runners shell
       - name: RUN flask
-      - run:  pip install -r requirements.txt
-      - run: python3 app.py
+        run:  pip install -r requirements.txt
+    
