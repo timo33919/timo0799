@@ -19,4 +19,4 @@ jobs:
           python-version: '3.x'
 
       - name: Run python
-        run: /root/.venv/bin/python3 /root/yyk/timo0799/app.py
+        run: sudo /root/.venv/bin/python3 /root/yyk/timo0799/app.py
