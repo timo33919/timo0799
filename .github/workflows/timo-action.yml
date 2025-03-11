@@ -91,7 +91,7 @@ jobs:
           for i in "${!LOCAL_PATH[@]}"; do
             echo "#####    ossutil: cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}      #####"
             echo "#####    upload file    #####"
-            ossutil \
+            ossutil64 \
               --access-key-id $OSS_ACCESS_KEY_ID \
               --access-key-secret $OSS_ACCESS_KEY_SECRET \
               --endpoint $OSS_ENDPOINT \
@@ -100,7 +100,7 @@ jobs:
             cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}  #将目录同步到 OSS
 
             echo "#####    upload index.html    #####"
-            ossutil \
+            ossutil64 \
               --access-key-id $OSS_ACCESS_KEY_ID \
               --access-key-secret $OSS_ACCESS_KEY_SECRET \
               --endpoint $OSS_ENDPOINT \
