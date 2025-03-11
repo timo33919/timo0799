@@ -6,7 +6,7 @@
 #  cp-game_commit_id.txt
 #  aksk  token
 #  domain_ID
-#name: Pre US Upload to OSS
+name: Pre US Upload to OSS
 
 on:
   push:
