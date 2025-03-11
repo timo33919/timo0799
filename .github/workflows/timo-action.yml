@@ -30,7 +30,7 @@ jobs:
     if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}
     runs-on: [self-hosted, yyk]
     env:
-      PROJECT: “timo-project”
+      PROJECT: timo-project
       ID_FILE: "/home/ecs-user/.timo_commit_id.txt"
       OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK}}
