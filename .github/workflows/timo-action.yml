@@ -1,22 +1,38 @@
 
-name: timo upload oss
+#cp-games Pre US
+#
+#domain, oss, runner
+#cp-game_commit_id.txt
+#aksk  token
+#domain_ID
+#name: Pre US Upload to OSS
+name: Upload oss
 on:
   push:
     branches:
-      - main
+      - pre
     paths-ignore:
       - .github/workflows/**
-
+  workflow_dispatch:
+    inputs:
+      selected_jobs:
+        description: "Choose Increment or Full"
+        required: true
+        default: "Increment-upload"
+        type: choice
+        options:
+        - Increment-upload
+        - Full-upload
 
 jobs:
   Upload-to-OSS:
     if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}
     runs-on: [self-hosted, yyk]
     env:
-      PROJECT: timo-project
+      PROJECT: timo-pro
       ID_FILE: "/home/ecs-user/.cp-game_commit_id.txt"
       OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
-      OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK}}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
       OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
 
 
@@ -116,3 +132,4 @@ jobs:
           --data '{
               "purge_everything": true
           }'
+
