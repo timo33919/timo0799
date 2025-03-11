@@ -46,7 +46,6 @@ jobs:
         # 3. 上传构建文件到阿里云 OSS
         - name: Configure Alibaba Cloud OSSUTIL
           run: ossutil64 config -i ${OSS_ACCESS_KEY_ID} -k ${OSS_ACCESS_KEY_SECRET} -e ${OSS_ENDPOINT} -c .ossutilconfig
-
         - name: Upload to Alibaba Cloud OSS
           run: |
             pwd
