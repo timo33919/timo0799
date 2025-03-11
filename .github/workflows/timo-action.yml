@@ -84,7 +84,15 @@ jobs:
             cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}  #将目录同步到 OSS
 
             echo "#####    upload index.html    #####"
-            
+            ossutil \
+              --access-key-id $OSS_ACCESS_KEY_ID \
+              --access-key-secret $OSS_ACCESS_KEY_SECRET \
+              --endpoint $OSS_ENDPOINT \
+              --include index.html \
+              --meta Cache-Control:no-cache \
+              --force \
+            cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}   #将目录同步到 OSS
+          done
 
           if [ "${{ github.event.inputs.selected_jobs }}" != "Full-upload" ]; then
             rm -rf /tmp/$REPO
