@@ -77,14 +77,10 @@ jobs:
             fi
 
             for i in "${!LOCAL_PATH[@]}"; do
-              echo "#####    ossutil: cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}      #####"
-              echo "#####    upload file    #####"
-            
+              
               ossutil64 -c $HOME/.ossutilconfig cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}  #将目录同步到 OSS
 
-              echo "#####    upload index.html    #####"
-
-
+    
             if [ "${{ github.event.inputs.selected_jobs }}" != "Full-upload" ]; then
               rm -rf /tmp/$REPO
             fi
