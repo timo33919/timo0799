@@ -1,29 +1,12 @@
 
-
-#cp-games Pre US
-#
-#  domain, oss, runner
-#  cp-game_commit_id.txt
-#  aksk  token
-#  domain_ID
-name: Pre US Upload to OSS
-
+name: timo upload oss
 on:
   push:
     branches:
       - main
     paths-ignore:
-      - .github/workflows/**    
-  workflow_dispatch:
-    inputs:
-      selected_jobs:
-        description: "Choose Increment or Full"
-        required: true
-        default: "Increment-upload"
-        type: choice
-        options:
-        - Increment-upload
-        - Full-upload
+      - .github/workflows/**
+
 
 jobs:
   Upload-to-OSS:
@@ -31,12 +14,10 @@ jobs:
     runs-on: [self-hosted, yyk]
     env:
       PROJECT: timo-project
-      ID_FILE: "/home/ecs-user/.timo_commit_id.txt"
+      ID_FILE: "/home/ecs-user/.cp-game_commit_id.txt"
       OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK}}
-      OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK}}
-      OSS_PATH: ${{secrets.PRE_US_OSS_PATH_YYK}}
-      BUCKET_PATH: "oss://timo-test/"
+      OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
 
 
     steps:
@@ -65,15 +46,17 @@ jobs:
         run: |
           pwd
           set -e
-          BUCKET_PATH=("oss://timo-test/")
+          
           if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]; then
             LOCAL_PATH=("./build/games/res/")
-            
+            BUCKET_PATH=("oss://cp-games-pre-us/")
+
           else
             COMMIT_ID=$(grep ^$PROJECT  $ID_FILE |awk '{print $2}')
             REPO=`basename $(git rev-parse --show-toplevel)`_$PROJECT
             LOCAL_PATH=("/tmp/$REPO/build/games/res/")
-            
+            BUCKET_PATH=("oss://cp-games-pre-us/")
+
             for m in "${LOCAL_PATH[@]}"; do
               mkdir -p "$m"
             done
@@ -100,6 +83,8 @@ jobs:
               --force \
             cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}  #将目录同步到 OSS
 
+            echo "#####    upload index.html    #####"
+            
 
           if [ "${{ github.event.inputs.selected_jobs }}" != "Full-upload" ]; then
             rm -rf /tmp/$REPO
@@ -123,4 +108,3 @@ jobs:
           --data '{
               "purge_everything": true
           }'
-
