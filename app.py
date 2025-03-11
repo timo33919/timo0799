@@ -20,25 +20,16 @@ REQUEST_ID_HEADER = "x-fc-request-id"
 
 @app.route("/status", methods=["GET"])
 def init_invoke():
-    rid = request.headers.get(REQUEST_ID_HEADER)
-    print("FC Initialize Start RequestId: " + rid)
-    # do your things
-
-    print("FC Initialize End RequestId: " + rid)
-    return "OK 200"
+   
+    return "OK 8000"
 
 
 @app.route("/invoke", methods=["POST"])
 def event_invoke():
-    rid = request.headers.get(REQUEST_ID_HEADER)
-    print("FC Invoke Start RequestId: " + rid)
-
-    print("hello world!")
-
-    print("FC Invoke End RequestId: " + rid)
+  
 
     return "hello world!"
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=9000, threaded=True)
+    app.run(host="0.0.0.0", port=8000, threaded=True)
