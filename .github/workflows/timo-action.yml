@@ -69,13 +69,11 @@ jobs:
           if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]; then
             LOCAL_PATH=("./build/games/res/")
             
-
           else
             COMMIT_ID=$(grep ^$PROJECT  $ID_FILE |awk '{print $2}')
             REPO=`basename $(git rev-parse --show-toplevel)`_$PROJECT
             LOCAL_PATH=("/tmp/$REPO/build/games/res/")
             
-
             for m in "${LOCAL_PATH[@]}"; do
               mkdir -p "$m"
             done
@@ -102,8 +100,6 @@ jobs:
               --force \
             cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}  #将目录同步到 OSS
 
-            echo "#####    upload index.html    #####"
-            
 
           if [ "${{ github.event.inputs.selected_jobs }}" != "Full-upload" ]; then
             rm -rf /tmp/$REPO
