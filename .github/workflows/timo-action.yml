@@ -91,7 +91,6 @@ jobs:
           for i in "${!LOCAL_PATH[@]}"; do
             echo "#####    ossutil: cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}      #####"
             echo "#####    upload file    #####"
-            ossutil64 \
               ossutil64 -c ~/.ossutilconfig \
               --exclude index.html \
               --force \
