@@ -28,7 +28,7 @@ on:
 jobs:
   Upload-to-OSS:
     if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}
-    runs-on: [self-hosted, yyk, pre]
+    runs-on: [self-hosted, yyk]
     env:
       PROJECT: “timo-project”
       ID_FILE: "/home/ecs-user/.timo_commit_id.txt"
