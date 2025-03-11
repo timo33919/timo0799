@@ -65,13 +65,13 @@ jobs:
           
           if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]; then
             LOCAL_PATH=("./build/games/res/")
-            BUCKET_PATH=("oss://cp-games-pre-us/")
+            BUCKET_PATH=("oss://timo-test/")
 
           else
             COMMIT_ID=$(grep ^$PROJECT  $ID_FILE |awk '{print $2}')
             REPO=`basename $(git rev-parse --show-toplevel)`_$PROJECT
             LOCAL_PATH=("/tmp/$REPO/build/games/res/")
-            BUCKET_PATH=("oss://cp-games-pre-us/")
+            BUCKET_PATH=("oss://timo-test/")
 
             for m in "${LOCAL_PATH[@]}"; do
               mkdir -p "$m"
