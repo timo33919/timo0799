@@ -1,11 +1,29 @@
 
+
+#cp-games Pre US
+#
+#  domain, oss, runner
+#  cp-game_commit_id.txt
+#  aksk  token
+#  domain_ID
+#name: Pre US Upload to OSS
+
 on:
   push:
     branches:
       - main
     paths-ignore:
-      - .github/workflows/**
-
+      - .github/workflows/**    
+  workflow_dispatch:
+    inputs:
+      selected_jobs:
+        description: "Choose Increment or Full"
+        required: true
+        default: "Increment-upload"
+        type: choice
+        options:
+        - Increment-upload
+        - Full-upload
 
 jobs:
   Upload-to-OSS:
@@ -20,72 +38,93 @@ jobs:
       OSS_PATH: ${{secrets.PRE_US_OSS_PATH_YYK}}
       BUCKET_PATH: "oss://timo-test/"
 
-      steps:
 
-        # 1. 检出代码
-        - name: Checkout code
-          uses: actions/checkout@v3
-          with:
-            fetch-depth: 20  # 拉取最近 20 次提交
+    steps:
+      # 1. 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 20  # 拉取最近 20 次提交
 
-        # 2. 检查上次的 commit ID
-        - name: Get Last commit ID
-          run: |
-            BRANCH=`git branch --show-current`
-            cd timo0799 && git pull
+      # 2. 检查上次的 commit ID
+      - name: Get Last commit ID
+        run: |
+          BRANCH=`git branch --show-current`
+          COMMIT_ID=$(grep ^$PROJECT  $ID_FILE |awk '{print $2}')
+          if [ -z "$COMMIT_ID" ]; then
+            echo "Error Commit ID. Exiting..."
+            echo "Please Check $ID_FILE,  Example:"
+            echo "<project_name> <last_commit_id> "
+            exit 1
+          else
+            echo "last commit_id: $COMMIT_ID"
+          fi
+
+      # 3. 上传构建文件到阿里云 OSS
+      - name: Upload to Alibaba Cloud OSS
+        run: |
+          pwd
+          set -e
+          BUCKET_PATH=("oss://timo-test/")
+          if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]; then
+            LOCAL_PATH=("./build/games/res/")
+            
+
+          else
             COMMIT_ID=$(grep ^$PROJECT  $ID_FILE |awk '{print $2}')
-            if [ -z "$COMMIT_ID" ]; then
-              echo "Error Commit ID. Exiting..."
-              echo "Please Check $ID_FILE,  Example:"
-              echo "<project_name> <last_commit_id> "
-              exit 1
-            else
-              echo "last commit_id: $COMMIT_ID"
-            fi
+            REPO=`basename $(git rev-parse --show-toplevel)`_$PROJECT
+            LOCAL_PATH=("/tmp/$REPO/build/games/res/")
+            
 
-        # 3. 上传构建文件到阿里云 OSS
-        - name: Configure Alibaba Cloud OSSUTIL
-          run: ossutil64 config -i ${OSS_ACCESS_KEY_ID} -k ${OSS_ACCESS_KEY_SECRET} -e ${OSS_ENDPOINT} -c .ossutilconfig
-        - name: Upload to Alibaba Cloud OSS
-          run: |
-            pwd
-            set -e
+            for m in "${LOCAL_PATH[@]}"; do
+              mkdir -p "$m"
+            done
 
-            if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]; then  
-              LOCAL_PATH=("./build/games/res/")
-              BUCKET_PATH=("oss://timo-test/")
-        ############# 增量 ##################
-            else  
-              COMMIT_ID=$(grep ^$PROJECT  $ID_FILE |awk '{print $2}')
-              REPO=`basename $(git rev-parse --show-toplevel)`_$PROJECT
-              LOCAL_PATH=("/tmp/$REPO/build/games/res/")
-              BUCKET_PATH=("oss://cp-games-pre-us/")
+            for i in `git diff --name-only $COMMIT_ID HEAD |grep ^build`
+            do
+              if [  -e "$i" ]; then
+                echo "######   Git update files: $i    #####"
+                rsync -R $i /tmp/$REPO/
+              else
+                continue
+              fi
+            done
+          fi
 
-              for m in "${LOCAL_PATH[@]}"; do
-                mkdir -p "$m"
-              done
+          for i in "${!LOCAL_PATH[@]}"; do
+            echo "#####    ossutil: cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}      #####"
+            echo "#####    upload file    #####"
+            ossutil \
+              --access-key-id $OSS_ACCESS_KEY_ID \
+              --access-key-secret $OSS_ACCESS_KEY_SECRET \
+              --endpoint $OSS_ENDPOINT \
+              --exclude index.html \
+              --force \
+            cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}  #将目录同步到 OSS
 
-              for i in `git diff --name-only $COMMIT_ID HEAD |grep ^build`
-              do
-                if [  -e "$i" ]; then
-                  rsync -R $i /tmp/$REPO/
-                else
-                  continue
-                fi
-              done
-            fi
+            echo "#####    upload index.html    #####"
+            
 
-            for i in "${!LOCAL_PATH[@]}"; do
-              
-              ossutil64 -c $HOME/.ossutilconfig cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}  #将目录同步到 OSS
+          if [ "${{ github.event.inputs.selected_jobs }}" != "Full-upload" ]; then
+            rm -rf /tmp/$REPO
+          fi
 
-    
-            if [ "${{ github.event.inputs.selected_jobs }}" != "Full-upload" ]; then
-              rm -rf /tmp/$REPO
-            fi
+      # 4. 保存 commit ID
+      - name: Save Commit ID to file
+        run: |
+          HEAD_ID=`git rev-parse HEAD`
+          sed -i "s/^$PROJECT .*/$PROJECT $HEAD_ID/" $ID_FILE
 
-        # 4. 保存 commit ID
-        - name: Save Commit ID to file
-          run: |
-            HEAD_ID=`git rev-parse HEAD`
-            sed -i "s/^$PROJECT .*/$PROJECT $HEAD_ID/" $ID_FILE
+      # 5. Purge Cache
+      - name: Purge Cache
+        env:
+          CACHE_TOKEN1: ${{ secrets.PRE_US_CACHE_TOKEN }}
+        run: |
+          #w-d-m-4.com   (pre accounnt)
+          curl --location 'https://api.cloudflare.com/client/v4/zones/8fb5bd34095c450e524227667fb753dd/purge_cache' \
+          --header 'Content-Type: application/json' \
+          --header "Authorization: Bearer $CACHE_TOKEN1" \
+          --data '{
+              "purge_everything": true
+          }'
+
