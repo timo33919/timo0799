@@ -1,0 +1,22 @@
+name: timo flask app
+
+on:
+  push:
+    branches: timo
+
+jobs:
+  run-flask:
+    runs-on: [self-hosted, yyk]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set python
+        uses: actions/setup-pyton@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run python
+        run: /root/.venv/bin/python3 /root/yyk/timo0799/app.py
