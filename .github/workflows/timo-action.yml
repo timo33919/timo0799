@@ -10,7 +10,7 @@ name: Upload oss
 on:
   push:
     branches:
-      - pre
+      - main
     paths-ignore:
       - .github/workflows/**
   workflow_dispatch:
@@ -29,7 +29,7 @@ jobs:
     if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}
     runs-on: [self-hosted, yyk]
     env:
-      PROJECT: timo-pro
+      PROJECT: timo-project
       ID_FILE: "/home/ecs-user/.cp-game_commit_id.txt"
       OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
