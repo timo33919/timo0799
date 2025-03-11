@@ -69,7 +69,6 @@ jobs:
               for i in `git diff --name-only $COMMIT_ID HEAD |grep ^build`
               do
                 if [  -e "$i" ]; then
-                  echo "######   Git update files: $i    #####"
                   rsync -R $i /tmp/$REPO/
                 else
                   continue
