@@ -1,0 +1,28 @@
+name: Send Telegram mess
+
+on:
+  push:
+    branches: [ "timo" ]
+  workflow_dispatch: # 允许手动触发
+    inputs:
+      select_jobs:
+        description: "choose job"
+        required: true
+        type: number
+        #option:
+
+
+
+
+jobs:
+  notify-telegram:
+    runs-on: [self-hosted, yyk]
+    steps:
+      - name: Send message via Telegram Bot
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            🗨 自定义消息：
+                  ${{ github.event.inputs.select_jobs }}
