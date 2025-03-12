@@ -3,6 +3,18 @@ name: timo flask app
 on:
   push:
     branches: timo
+    paths-ignore:
+      - .github/workflows/**
+  workflow_dispatch:
+    inputs:
+      selected_jobs:
+        description: "Choose Increment or Full"
+        required: true
+        default: "Increment-upload"
+        type: choice
+        options:
+        - timo-Increment-upload
+        - timo-full-upload
 
 jobs:
   run-flask:
