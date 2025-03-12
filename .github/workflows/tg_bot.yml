@@ -8,15 +8,16 @@ on:
       select_jobs:
         description: "choose job"
         required: true
-        type: number
-        #option:
+        type: choice
+        options:
+        - mannul-action
 
 
 
 
 jobs:
   notify-telegram:
-    runs-on: [self-hosted, yyk]
+    runs-on: ubuntu-latest
     steps:
       - name: Send message via Telegram Bot
         uses: appleboy/telegram-action@master
