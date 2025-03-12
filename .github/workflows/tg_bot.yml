@@ -25,5 +25,8 @@ jobs:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
-            🗨 自定义消息：
-                  ${{ github.event.inputs.select_jobs }}
+            🚀 GitHub Action 通知
+            ✅ 事件类型: ${{ github.event_name }}
+            📂 仓库: ${{ github.repository }}
+            🌿 分支: ${{ github.ref }}
+            👤 触发者: ${{ github.actor }}
