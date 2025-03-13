@@ -24,7 +24,7 @@ jobs:
           python-version: '3.x'
 
       - name: install python module
-        run: pip install python-telegram-bot requests  urllib3==1.26.15
+        run: pip install python-telegram-bot requests  urllib3==1.26.15 -t .
 
       - name: run python script
         run: python3 trigger.py
