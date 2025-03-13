@@ -1,0 +1,32 @@
+name: Send Telegram mess
+
+on:
+  push:
+    branches: [ "timo" ]
+  workflow_dispatch: # 允许手动触发
+    inputs:
+      select_jobs:
+        description: "choose job"
+        required: true
+        type: choice
+        options:
+        - mannul-action
+
+
+
+
+jobs:
+  notify-telegram:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message via Telegram Bot
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            🚀 GitHub Action 通知
+            ✅ 事件类型: ${{ github.event_name }}
+            📂 仓库: ${{ github.repository }}
+            🌿 分支: ${{ github.ref }}
+            👤 触发者: ${{ github.actor }}
