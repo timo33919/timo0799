@@ -6,7 +6,7 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 # 你的 Telegram Bot Token
-TELEGRAM_TOKEN = '7733478738:AAECSymmaZa1hWuVFYgQdqbMAfvXWPI3KGY'
+TELEGRAM_TOKEN = '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'
 
 # GitHub 仓库信息
 GITHUB_REPO_OWNER = 'timo33919'
