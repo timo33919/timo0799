@@ -9,7 +9,8 @@ TELEGRAM_TOKEN = '7733478738:AAECSymmaZa1hWuVFYgQdqbMAfvXWPI3KGY'
 # GitHub 仓库信息
 GITHUB_REPO_OWNER = 'timo33919'
 GITHUB_REPO_NAME = 'timo0799'
-GITHUB_TOKEN = "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"
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+print(GITHUB_TOKEN,'git_token')
 
 async def trigger_github_action(task: str):
     """
