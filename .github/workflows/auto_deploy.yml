@@ -1,4 +1,4 @@
-name: auto deploy
+name: auto action deps
 
 on:
   workflow_dispatch:
@@ -17,6 +17,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: install python module
+        run: pip install python-telegram-bot requests  urllib3==1.26.15
+
+      - name: run python script
+        run: python3 trigger.py
 
       - name: Run task
         run: |
