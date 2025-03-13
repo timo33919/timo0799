@@ -1,0 +1,32 @@
+name: auto deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Task to run'
+        required: true
+        type: choice
+        options:
+          - dep1
+          - dep2
+
+jobs:
+  run-task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run task
+        run: |
+          if [ "${{ github.event.inputs.task }}" == "dep1" ]; then
+            echo "Running dep1 task"
+            # Add your dep1 task commands here
+          elif [ "${{ github.event.inputs.task }}" == "dep2" ]; then
+            echo "Running dep2 task"
+            # Add your dep2 task commands here
+          else
+            echo "Unknown task"
+            exit 1
+          fi
