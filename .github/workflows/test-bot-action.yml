@@ -15,7 +15,10 @@ on:
         description: 'Branch to run on'
         required: true
         default: 'main'
-        type: string
+        type: choice
+        options:
+          - main
+          - timo
 
 jobs:
   determine-task:
