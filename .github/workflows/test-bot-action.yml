@@ -45,7 +45,7 @@ jobs:
     runs-on: [ self-hosted, yyk ]
     #runs-on: [ self-hosted, upload, sg, pp-game, runner-1, prod ]
     env:
-      PROJECT: prod_sg
+      PROJECT: timo-project
       ID_FILE: "/home/ecs-user/.cp-game_commit_id.txt"
       OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
@@ -80,26 +80,23 @@ jobs:
           set -e
 
           if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]; then
-            LOCAL_PATH=("./build/games/game/")
-            BUCKET_PATH=("oss://pp-game-prod-sg/")
-
+            LOCAL_PATH=("./build/games/res/")
+            BUCKET_PATH=("oss://timo-test/test")
 
           else
             COMMIT_ID=$(grep ^$PROJECT  $ID_FILE |awk '{print $2}')
             REPO=`basename $(git rev-parse --show-toplevel)`_$PROJECT
-            LOCAL_PATH=("/tmp/$REPO/build/games/game/")
-            BUCKET_PATH=("oss://pp-game-prod-sg/")
+            LOCAL_PATH=("/tmp/$REPO/build/games/res/")
+            BUCKET_PATH=("oss://timo-test/test")
 
             for m in "${LOCAL_PATH[@]}"; do
               mkdir -p "$m"
             done
 
-            # 获取git diff 的文件列表
-            echo -e "\n\n######   Git diff files list    #####"
             for i in `git diff --name-only $COMMIT_ID HEAD |grep ^build`
             do
               if [  -e "$i" ]; then
-                echo "######   Git update file: $i    #####"
+                echo "######   Git update files: $i    #####"
                 rsync -R $i /tmp/$REPO/
               else
                 continue
@@ -108,22 +105,16 @@ jobs:
           fi
 
           for i in "${!LOCAL_PATH[@]}"; do
-            echo -e "\n\n######    ossutil: cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}      ######"
-            echo "######    upload file    ######"
-            ossutil \
-              --access-key-id $OSS_ACCESS_KEY_ID \
-              --access-key-secret $OSS_ACCESS_KEY_SECRET \
-              --endpoint $OSS_ENDPOINT \
-              --exclude "*.html" \
+            echo "#####    ossutil: cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}      #####"
+            echo "#####    upload file    #####"
+              ossutil64 -c ~/.ossutilconfig \
+              --exclude index.html \
               --force \
             cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}  #将目录同步到 OSS
 
-            echo "#####    upload *.html    #####"
-            ossutil \
-              --access-key-id $OSS_ACCESS_KEY_ID \
-              --access-key-secret $OSS_ACCESS_KEY_SECRET \
-              --endpoint $OSS_ENDPOINT \
-              --include "*.html" \
+            echo "#####    upload index.html    #####"
+            ossutil64 -c ~/.ossutilconfig \
+              --include index.html \
               --meta Cache-Control:no-cache \
               --force \
             cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}   #将目录同步到 OSS
@@ -142,10 +133,10 @@ jobs:
       # 5. Purge Cache
       - name: Purge Cache
         env:
-          CACHE_TOKEN1: ${{ secrets.PROD_SG_CACHE_TOKEN }}
+          CACHE_TOKEN1: ${{ secrets.PRE_US_CACHE_TOKEN }}
         run: |
-          #x-q-2-k.com    (prod 8899happyfish account)
-          curl --location 'https://api.cloudflare.com/client/v4/zones/52c9565ba9906fa8b2276751873c2dbe/purge_cache' \
+          #w-d-m-4.com   (pre accounnt)
+          curl --location 'https://api.cloudflare.com/client/v4/zones/8fb5bd34095c450e524227667fb753dd/purge_cache' \
           --header 'Content-Type: application/json' \
           --header "Authorization: Bearer $CACHE_TOKEN1" \
           --data '{
