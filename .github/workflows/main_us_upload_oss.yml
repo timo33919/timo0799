@@ -6,7 +6,7 @@
 #aksk  token
 #domain_ID
 #name: Pre US Upload to OSS
-name: Upload oss
+name: telgram-to-OSS
 on:
   push:
     branches:
