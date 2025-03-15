@@ -1,0 +1,128 @@
+
+#cp-games Pre US
+#
+#domain, oss, runner
+#cp-game_commit_id.txt
+#aksk  token
+#domain_ID
+#name: Pre US Upload to OSS
+name: Upload oss
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - .github/workflows/**
+  workflow_dispatch:
+    inputs:
+      selected_jobs:
+        description: "Choose Increment or Full"
+        required: true
+        default: "Increment-upload"
+        type: choice
+        options:
+        - Increment-upload
+        - Full-upload
+
+jobs:
+  Upload-to-OSS:
+    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}
+    runs-on: [self-hosted, yyk]
+    env:
+      PROJECT: timo-project
+      ID_FILE: "/home/ecs-user/.cp-game_commit_id.txt"
+      OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
+      OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
+
+
+    steps:
+      # 1. 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 20  # 拉取最近 20 次提交
+
+      # 2. 检查上次的 commit ID
+      - name: Get Last commit ID
+        run: |
+          BRANCH=`git branch --show-current`
+          COMMIT_ID=$(grep ^$PROJECT  $ID_FILE |awk '{print $2}')
+          if [ -z "$COMMIT_ID" ]; then
+            echo "Error Commit ID. Exiting..."
+            echo "Please Check $ID_FILE,  Example:"
+            echo "<project_name> <last_commit_id> "
+            exit 1
+          else
+            echo "last commit_id: $COMMIT_ID"
+          fi
+
+      # 3. 上传构建文件到阿里云 OSS
+      - name: Upload to Alibaba Cloud OSS
+        run: |
+          pwd
+          set -e
+          
+          if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]; then
+            LOCAL_PATH=("./build/games/res/")
+            BUCKET_PATH=("oss://timo-test/test")
+
+          else
+            COMMIT_ID=$(grep ^$PROJECT  $ID_FILE |awk '{print $2}')
+            REPO=`basename $(git rev-parse --show-toplevel)`_$PROJECT
+            LOCAL_PATH=("/tmp/$REPO/build/games/res/")
+            BUCKET_PATH=("oss://timo-test/test")
+
+            for m in "${LOCAL_PATH[@]}"; do
+              mkdir -p "$m"
+            done
+
+            for i in `git diff --name-only $COMMIT_ID HEAD |grep ^build`
+            do
+              if [  -e "$i" ]; then
+                echo "######   Git update files: $i    #####"
+                rsync -R $i /tmp/$REPO/
+              else
+                continue
+              fi
+            done
+          fi
+
+          for i in "${!LOCAL_PATH[@]}"; do
+            echo "#####    ossutil: cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}      #####"
+            echo "#####    upload file    #####"
+              ossutil64 -c ~/.ossutilconfig \
+              --exclude index.html \
+              --force \
+            cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}  #将目录同步到 OSS
+
+            echo "#####    upload index.html    #####"
+            ossutil64 -c ~/.ossutilconfig \
+              --include index.html \
+              --meta Cache-Control:no-cache \
+              --force \
+            cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}   #将目录同步到 OSS
+          done
+
+          if [ "${{ github.event.inputs.selected_jobs }}" != "Full-upload" ]; then
+            rm -rf /tmp/$REPO
+          fi
+
+      # 4. 保存 commit ID
+      - name: Save Commit ID to file
+        run: |
+          HEAD_ID=`git rev-parse HEAD`
+          sed -i "s/^$PROJECT .*/$PROJECT $HEAD_ID/" $ID_FILE
+
+      # 5. Purge Cache
+      - name: Purge Cache
+        env:
+          CACHE_TOKEN1: ${{ secrets.PRE_US_CACHE_TOKEN }}
+        run: |
+          #w-d-m-4.com   (pre accounnt)
+          curl --location 'https://api.cloudflare.com/client/v4/zones/8fb5bd34095c450e524227667fb753dd/purge_cache' \
+          --header 'Content-Type: application/json' \
+          --header "Authorization: Bearer $CACHE_TOKEN1" \
+          --data '{
+              "purge_everything": true
+          }'
