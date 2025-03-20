@@ -3,7 +3,6 @@ name: Monitor Workflow
 on:
   workflow_run:
     workflows: ["telgram-to-sg-OSS", "telgram-to-OSS"]
-    
     types:
       - started
       - completed
@@ -16,15 +15,24 @@ jobs:
         id: check_status
         run: |
           if [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]; then
-            echo "STATUS=✅ CI/CD Pipeline Succeeded! 🎉" >> $GITHUB_ENV
+            echo "STATUS=✅ ${{ github.event.workflow_run.name }} Succeeded! 🎉" >> $GITHUB_ENV
           elif [[ "${{ github.event.workflow_run.conclusion }}" == "failure" ]]; then
-            echo "STATUS=❌ CI/CD Pipeline Failed! 😢" >> $GITHUB_ENV
+            echo "STATUS=❌ ${{ github.event.workflow_run.name }} Failed! 😢" >> $GITHUB_ENV
           else
-            echo "STATUS=🔄 CI/CD Pipeline is Running..." >> $GITHUB_ENV
+            echo "STATUS=🔄 ${{ github.event.workflow_run.name }} is Running..." >> $GITHUB_ENV
+          fi
+
+      - name: Determine Chat ID
+        id: determine_chat_id
+        run: |
+          if [[ "${{ github.event.workflow_run.head_repository.owner.login }}" == "${{ github.repository_owner }}" ]]; then
+            echo "CHAT_ID=${{ secrets.TELEGRAM_PERSONAL_CHAT_ID }}" >> $GITHUB_ENV
+          else
+            echo "CHAT_ID=${{ secrets.TELEGRAM_GROUP_CHAT_ID }}" >> $GITHUB_ENV
           fi
 
       - name: Notify Telegram
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
-          -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+          -d chat_id=$CHAT_ID \
           -d text="Workflow Status: $STATUS"
