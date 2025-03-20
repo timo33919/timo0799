@@ -19,7 +19,7 @@ on:
         description: "Choose Increment or Full"
         required: true
         default: "Increment-upload"
-        type: choice
+        type: string
         options:
         - Increment-upload
         - Full-upload
