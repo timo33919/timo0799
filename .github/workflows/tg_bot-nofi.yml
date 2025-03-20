@@ -23,14 +23,16 @@ jobs:
           fi
 
 
-      - name: Get Chat ID from Telegram
-        id: get_chat_id
+      - name: Determine Chat ID
+        id: determine_chat_id
         run: |
-          # 使用 Telegram Bot API 获取最新消息的 Chat ID
-          RESPONSE=$(curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/getUpdates)
-          CHAT_ID=$(echo "$RESPONSE" | jq -r '.result[0].message.chat.id')
-          echo "Chat ID: $CHAT_ID"
-          echo "CHAT_ID=$CHAT_ID" >> $GITHUB_ENV
+          if [[ ${{ secrets.TELEGRAM_GROUP_CHAT_ID }} -gt 0 ]]; then
+            echo "CHAT_ID=${{ secrets.TELEGRAM_PERSONAL_CHAT_ID }}" >> $GITHUB_ENV
+            echo "$CHAT_ID pepole"
+          else
+            echo "CHAT_ID=${{ secrets.TELEGRAM_GROUP_CHAT_ID }}" >> $GITHUB_ENV
+            echo "$CHAT_ID group"
+          fi
       
       - name: Notify Telegram
         run: |
