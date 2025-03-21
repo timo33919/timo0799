@@ -26,12 +26,12 @@ on:
       environment:
         description: 'Environment to run tests against'
         type: string
-        required: true
+        required: false
         
 
 jobs:
   telgram-to-OSS:
-    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}  
+    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' || github.event.inputs.environment || 'Full-upload' }}  
     runs-on: [self-hosted, yyk]
     
     env:
