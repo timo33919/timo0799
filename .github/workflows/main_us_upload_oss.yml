@@ -114,7 +114,7 @@ jobs:
           done
 
           if [ env.UPDATE_STATUS != "Full-upload" ]; then
-            rm -rf /tmp/$REPO
+             sudo rm -rf /tmp/$REPO
           fi
 
       # 4. 保存 commit ID
