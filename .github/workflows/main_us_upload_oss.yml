@@ -23,11 +23,16 @@ on:
         options:
         - Increment-upload
         - Full-upload
+      environment:
+        type: environment
+        required: true
+        
 
 jobs:
   telgram-to-OSS:
     if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}
     runs-on: [self-hosted, yyk]
+    environment: ${{ github.event.inputs.environment }}
     env:
       PROJECT: timo-project
       ID_FILE: "/home/ecs-user/.cp-game_commit_id.txt"
@@ -35,16 +40,17 @@ jobs:
       OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
       OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
       SELECTED_JOBS: ${{ env.SELECTED_JOBS || 'Increment-upload' }}  # 默认值
-
-
+      
+      FULL: ${{ vars.FULL }}
     steps:
       # 1. 检出代码
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 20  # 拉取最近 20 次提交
-      - name: pring jobs-evn
-        run: echo "Selected jobs:$SELECTED_JOBS"
+          
+      - name: Use environment variable
+        run: echo "Environment variable:$FULL"
         
       # 2. 检查上次的 commit ID
       - name: Get Last commit ID
