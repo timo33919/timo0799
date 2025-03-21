@@ -19,18 +19,19 @@ on:
         description: "Choose Increment or Full"
         required: true
         default: "Increment-upload"
-        type: string
+        type: choice
         options:
         - Increment-upload
         - Full-upload
       environment:
-        type: environment
+        description: 'Environment to run tests against'
+        type: string
         required: true
         
 
 jobs:
   telgram-to-OSS:
-    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}
+    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' || ${{ vars.FULL || == 'Full-upload' }}  
     runs-on: [self-hosted, yyk]
     environment: ${{ github.event.inputs.environment }}
     env:
@@ -39,19 +40,16 @@ jobs:
       OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
       OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
-      SELECTED_JOBS: ${{ env.SELECTED_JOBS || 'Increment-upload' }}  # 默认值
       
-      FULL: ${{ vars.FULL }}
     steps:
       # 1. 检出代码
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 20  # 拉取最近 20 次提交
-          
-      - name: Use environment variable
-        run: echo "Environment variable:$FULL"
-        
+      - name: print evn
+        run: |
+          echo "Environment: ${{ github.event.inputs.environment }}"
       # 2. 检查上次的 commit ID
       - name: Get Last commit ID
         run: |
