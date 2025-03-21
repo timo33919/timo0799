@@ -34,6 +34,7 @@ jobs:
       OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
       OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
+      SELECTED_JOBS: ${{ env.SELECTED_JOBS || 'Increment-upload' }}  # 默认值
 
 
     steps:
@@ -42,7 +43,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 20  # 拉取最近 20 次提交
-
+      - name: pring jobs-evn
+        run: echo "Selected jobs:$SELECTED_JOBS"
+        
       # 2. 检查上次的 commit ID
       - name: Get Last commit ID
         run: |
@@ -63,7 +66,7 @@ jobs:
           pwd
           set -e
           
-          if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]; then
+          if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]|| ["$SELECTED_JOBS "] == "Full-upload"; then
             LOCAL_PATH=("./t1/")
             BUCKET_PATH=("oss://timo-test/test")
             echo "full update"
