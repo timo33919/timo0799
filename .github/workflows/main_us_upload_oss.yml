@@ -31,7 +31,7 @@ on:
 
 jobs:
   telgram-to-OSS:
-    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}  
+    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' || ${{ github.event.inputs.environment }} == "Full-upload" }}  
     runs-on: [self-hosted, yyk]
     environment: ${{ github.event.inputs.environment }}
     env:
@@ -70,7 +70,7 @@ jobs:
           pwd
           set -e
           
-          if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" ]|| ["$SELECTED_JOBS "] == "Full-upload"; then
+          if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" || ${{ github.event.inputs.environment }} == "Full-upload" ]; then
             LOCAL_PATH=("./t1/")
             BUCKET_PATH=("oss://timo-test/test")
             echo "full update"
