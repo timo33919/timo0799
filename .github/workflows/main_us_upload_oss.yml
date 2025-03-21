@@ -40,6 +40,7 @@ jobs:
       OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
       OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
+      UPDATE_STATUS: ${{ github.event.inputs.environment }}
       
     steps:
       # 1. 检出代码
@@ -49,7 +50,7 @@ jobs:
           fetch-depth: 20  # 拉取最近 20 次提交
       - name: print evn
         run: |
-          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "Environment: $UPDATE_STATUS"
       # 2. 检查上次的 commit ID
       - name: Get Last commit ID
         run: |
@@ -70,7 +71,7 @@ jobs:
           pwd
           set -e
           
-          if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" || ${{ github.event.inputs.environment }} == "Full-upload" ]; then
+          if [ "${{ github.event.inputs.selected_jobs }}" == "Full-upload" || $UPDATE_STATUS == "Full-upload" ]; then
             LOCAL_PATH=("./t1/")
             BUCKET_PATH=("oss://timo-test/test")
             echo "full update"
