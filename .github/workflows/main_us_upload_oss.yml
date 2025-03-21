@@ -31,7 +31,7 @@ on:
 
 jobs:
   telgram-to-OSS:
-    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' || ${{ vars.FULL || == 'Full-upload' }}  
+    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' }}  
     runs-on: [self-hosted, yyk]
     environment: ${{ github.event.inputs.environment }}
     env:
