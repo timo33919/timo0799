@@ -107,7 +107,7 @@ jobs:
               --force \
             cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}   #将目录同步到 OSS
           done
-
+          exit 15
           if [ "${{ github.event.inputs.selected_jobs }}" != "Full-upload" ]; then
             rm -rf /tmp/$REPO
           fi
