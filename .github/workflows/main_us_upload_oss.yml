@@ -23,15 +23,12 @@ on:
         options:
         - Increment-upload
         - Full-upload
-      environment:
-        description: 'Environment to run tests against'
-        type: string
-        required: false
+     
         
 
 jobs:
   telgram-to-OSS:
-    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload' || github.event.inputs.environment || 'Full-upload' }}  
+    if: ${{ github.event_name == 'push' || github.event.inputs.selected_jobs  == 'Increment-upload' || github.event.inputs.selected_jobs == 'Full-upload'  }}  
     runs-on: [self-hosted, yyk]
     
     env:
@@ -40,7 +37,7 @@ jobs:
       OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
       OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
-      UPDATE_STATUS: ${{ github.event.inputs.environment }}
+      #UPDATE_STATUS: ${{ github.event.inputs.environment }}
       
     steps:
       # 1. 检出代码
@@ -48,9 +45,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 20  # 拉取最近 20 次提交
-      - name: print evn
-        run: |
-          echo "Environment: $UPDATE_STATUS"
       # 2. 检查上次的 commit ID
       - name: Get Last commit ID
         run: |
@@ -114,9 +108,8 @@ jobs:
             cp -r ${LOCAL_PATH[i]} ${BUCKET_PATH[i]}   #将目录同步到 OSS
           done
 
-          if [ env.UPDATE_STATUS != "Full-upload" ]; then
-              echo "${REPO}---!!!!"
-              sudo rm -rf /tmp/*
+          if [ "${{ github.event.inputs.selected_jobs }}" != "Full-upload" ]; then
+            rm -rf /tmp/$REPO
           fi
 
       # 4. 保存 commit ID
