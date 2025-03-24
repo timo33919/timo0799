@@ -22,6 +22,12 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+          
+      - name: Installdependencies
+        run: |
+          npm install
+          npm install -g @serverless-devs/s
+      
 
       - name: Install osutil
         run: |
@@ -34,7 +40,7 @@ jobs:
 
       - name: Add Serverless Devs configuration
         run: |
-         s config add --AccessKeyID ${{secrets.PRE_OSS_AK_YYK}} --AccessKeySecret ${{secrets.PRE_OSS_SK_YYK}} -a default -f
+         s config add --AccessKeyID ${{ secrets.PRE_OSS_AK_YYK }} --AccessKeySecret ${{ secrets.PRE_OSS_SK_YYK }} -a default -f
          ossutil ls oss://timo-test/test
 
       - name: Deploy to Function Compute
