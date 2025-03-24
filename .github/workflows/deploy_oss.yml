@@ -1,0 +1,45 @@
+name: Deploy to Alibaba OSS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install -g @serverless-devs/s
+
+      - name: Configure Alibaba Cloud Credentials
+        uses: aliyun/configure-aliyun-credentials@v1.0.0
+        with:
+          access-key-id: ${{ secrets.PRE_OSS_AK_YYK }}
+          access-key-secret: ${{ secrets.PRE_OSS_SK_YYK }}
+          region: ap-southeast-1
+
+
+     
+
+      - name: Add Serverless Devs configuration
+        run: s config add --AccessKeyID ${{secrets.PRE_OSS_AK_YYK}} --AccessKeySecret ${{secrets.PRE_OSS_SK_YYK}} -a default -f
+
+      - name: Deploy to Function Compute
+        run: s deploy -y --use-local
+        env:
+          OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
+          OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
+          OSS_BUCKET_PATH: oss://timo-test/test
