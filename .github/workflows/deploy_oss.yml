@@ -23,15 +23,17 @@ jobs:
           npm install
           npm install -g @serverless-devs/s
 
-      - name: Setup Aliyun CLI
+      - name: Install ossutil
         run: |
-          curl -sL https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz | tar xz
-          sudo mv aliyun /usr/local/bin/
-          aliyun configure set --profile default \
-          --access-key-id ${{ secrets.ALIYUN_FC_AK }} \
-          --access-key-secret ${{ secrets.ALIYUN_FC_SK }} \
-          --region ap-southeast-1
-
+          curl -L https://gosspublic.alicdn.com/ossutil/1.7.0/ossutil64 -o /usr/local/bin/ossutil
+          chmod +x /usr/local/bin/ossutil
+          
+      - name: Sync files to OSS
+        env:
+          ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
+          ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
+        run: |
+          ossutil cp -r ./app.py oss://timo-test/test --access-key-id=$ACCESS_KEY_ID --access-key-secret=$ACCESS_KEY_SECRET --endpoint=ap-southeast-1.aliyuncs.com
 
      
 
