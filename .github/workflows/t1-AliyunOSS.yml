@@ -17,16 +17,11 @@ jobs:
       - name: Build Project
         run: npm install && npm run build
 
-      - name: Deploy OSS
-        uses: taixw2/deploy-aliyun-oss@v1
-        with:
-          # aliyun config
-          region: ap-southeast-1.aliyuncs.com
-          access-key-id: ${{ secrets.PRE_OSS_AK_YYK }}
-          access-key-secret: ${{ secrets.PRE_OSS_SK_YYK }}
-          bucket: ${{ secrets.BUCKET }}
-          secure: true
-          # deploy config
-          entry: dist/**/* # glob pattern
-          remote-dir: /
-          path-rewrite: ^dist/
+      - name: Setup Aliyun CLI
+        run: |
+         curl -sL https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz | tar xz
+         sudo mv aliyun /usr/local/bin/
+         aliyun configure set --profile default \
+          --access-key-id ${{ secrets.PRE_OSS_AK_YYK }} \
+          --access-key-secret ${{ secrets.PRE_OSS_SK_YYK }} \
+          --region ap-southeast-1
