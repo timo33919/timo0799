@@ -33,9 +33,9 @@ resources:
           /code:/code/lib:/usr/local/lib:/opt/lib:/opt/php8.1/lib:/opt/php8.0/lib:/opt/php7.2/lib
         # 新增OSS相关配置
 
-        OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
-        OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
-        OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
+        OSS_ACCESS_KEY_ID: ${env.PRE_OSS_AK_YYK}
+        OSS_ACCESS_KEY_SECRET: ${env.PRE_OSS_SK_YYK}
+        OSS_ENDPOINT: ${env.PRE_US_OSS_ENDPOINT_YYK}
         OSS_BUCKET_PATH: oss://timo-test/test
       code: ./index.py
       triggers:
