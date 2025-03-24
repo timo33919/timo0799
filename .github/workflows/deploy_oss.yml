@@ -18,29 +18,24 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org/
 
-
-      - name: Install ossutil
+      - name: Install osutil
         run: |
-          # 下载最新版 ossutil
           wget http://gosspublic.alicdn.com/ossutil/1.7.1/ossutil64 -O ossutil64
-
-          # 设置执行权限
           chmod +x ossutil64
-
-          # 移动到 PATH 目录
           sudo mv ossutil64 /usr/local/bin/ossutil
 
-          # 验证安装
-          ossutil --version
+      - name: Config ossutil
+        run: ossutil config -e $OSS_ENDPOINT -i $OSS_ACCESS_KEY_ID -k $OSS_ACCESS_KEY_SECRET -L CH
 
-      - name: Configure ossutil
+      - name: Add Serverless Devs configuration
         run: |
-          ossutil config -e $OSS_ENDPOINT -i $OSS_ACCESS_KEY_ID -k $OSS_ACCESS_KEY_SECRET -L CH
+         s config add --AccessKeyID ${{secrets.PRE_OSS_AK_YYK}} --AccessKeySecret ${{secrets.PRE_OSS_SK_YYK}} -a default -f
+         ossutil ls oss://timo-test/test
 
-      - name: Example OSS operations
-        run: |
-          # 列出 bucket 内容
-          ossutil ls oss://$OSS_BUCKET
-
-     
-
+      - name: Deploy to Function Compute
+        run: s deploy -y --use-local
+        env:
+          OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
+          OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
+          OSS_BUCKET_PATH: oss://timo-test/test
