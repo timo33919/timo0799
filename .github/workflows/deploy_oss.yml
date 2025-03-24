@@ -25,15 +25,26 @@ jobs:
 
       - name: Install ossutil
         run: |
-          curl -L https://gosspublic.alicdn.com/ossutil/1.7.0/ossutil64 -o /usr/local/bin/ossutil
-          chmod +x /usr/local/bin/ossutil
-          
-      - name: Sync files to OSS
-        env:
-          ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
-          ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
+          # 下载最新版 ossutil
+          wget http://gosspublic.alicdn.com/ossutil/1.7.1/ossutil64 -O ossutil64
+
+          # 设置执行权限
+          chmod +x ossutil64
+
+          # 移动到 PATH 目录
+          sudo mv ossutil64 /usr/local/bin/ossutil
+
+          # 验证安装
+          ossutil --version
+
+      - name: Configure ossutil
         run: |
-          ossutil cp -r ./app.py oss://timo-test/test/ --access-key-id=$ACCESS_KEY_ID --access-key-secret=$ACCESS_KEY_SECRET --endpoint=ap-southeast-1.aliyuncs.com
+          ossutil config -e $OSS_ENDPOINT -i $OSS_ACCESS_KEY_ID -k $OSS_ACCESS_KEY_SECRET -L CH
+
+      - name: Example OSS operations
+        run: |
+          # 列出 bucket 内容
+          ossutil ls oss://$OSS_BUCKET
 
      
 
