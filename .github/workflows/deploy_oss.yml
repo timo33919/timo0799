@@ -21,8 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          npm install -g @serverless-devs/s
-          npm run t1:build
+          npm run 
 
       - name: Install ossutil
         run: |
