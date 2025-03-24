@@ -23,8 +23,8 @@ jobs:
           # aliyun config
           region: oss-cn-hongkong.aliyuncs.com
           access-key-id: ${{ secrets.PRE_OSS_AK_YYK }}
-          access-key-secret: ${{ secrets.PRE_OSS_SK_YYK}}
-          bucket: oss://timo-test
+          access-key-secret: ${{ secrets.PRE_OSS_SK_YYK }}
+          bucket: ${{ secrets.BUCKET }}
           secure: true
           # deploy config
           entry: dist/**/* # glob pattern
