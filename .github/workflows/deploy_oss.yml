@@ -8,7 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -18,12 +17,11 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-          
-      - name: Installdependencies
+
+      - name: Install dependencies
         run: |
           npm install
           npm install -g @serverless-devs/s
-      
 
       - name: Install osutil
         run: |
@@ -32,24 +30,25 @@ jobs:
           sudo mv ossutil64 /usr/local/bin/ossutil
 
       - name: Config ossutil
-        run: ossutil config -e ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }} -i ${{ secrets.PRE_OSS_AK_YYK }} -k ${{ secrets.PRE_OSS_SK_YYK }} -L CH
+        run: ossutil config -e $OSS_ENDPOINT -i $OSS_ACCESS_KEY_ID -k $OSS_ACCESS_KEY_SECRET -L CH
 
       - name: Add Serverless Devs configuration
         run: |
-         s config add --AccessKeyID ${{ secrets.PRE_OSS_AK_YYK }} --AccessKeySecret ${{ secrets.PRE_OSS_SK_YYK }} -a default -f
+         s config add --AccessKeyID ${{secrets.PRE_OSS_AK_YYK}} --AccessKeySecret ${{secrets.PRE_OSS_SK_YYK}} -a default -f
          ossutil ls oss://timo-test/test
 
       - name: Deploy to Function Compute
         run: |
-          echo "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" > .env
-          echo "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" >> .env
-          echo "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}" >> .env
-          s deploy -y --use-local
- 
-        #env:
-         # OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
-         # OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
-         # OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
-         # OSS_BUCKET_PATH: oss://timo-test/test
-      - name: Verify env file
-        run: cat .env
+          # 将secrets写入临时环境变量文件
+           echo "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" > .env
+           echo "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" >> .env
+           echo "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}" >> .env
+           s deploy -y --use-local
+           cat .env
+
+#        env:
+#          OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
+#          OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
+#          OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }} #oss-ap-southeast-1.aliyuncs.com
+#          OSS_BUCKET_PATH: oss://timo-test/test
+
