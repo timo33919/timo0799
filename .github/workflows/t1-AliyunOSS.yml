@@ -1,0 +1,32 @@
+name: Example workflow for AliyunOSS
+on: [push]
+jobs:
+  Release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 2
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Build Project
+        run: npm install && npm run build
+
+      - name: Deploy OSS
+        uses: taixw2/deploy-aliyun-oss@v1
+        with:
+          # aliyun config
+          region: oss-cn-hongkong.aliyuncs.com
+          access-key-id: ${{ secrets.PRE_OSS_AK_YYK }}
+          access-key-secret: ${{ secrets.PRE_OSS_SK_YYK}}
+          bucket: oss://timo-test
+          secure: true
+          # deploy config
+          entry: dist/**/* # glob pattern
+          remote-dir: /
+          path-rewrite: ^dist/
