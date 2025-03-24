@@ -8,6 +8,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
+      OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
+      OSS_BUCKET_PATH: oss://timo-test/test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -34,8 +39,4 @@ jobs:
 
       - name: Deploy to Function Compute
         run: s deploy -y --use-local
-        env:
-          OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
-          OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
-          OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
-          OSS_BUCKET_PATH: oss://timo-test/test
+        
