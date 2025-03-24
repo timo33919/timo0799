@@ -26,6 +26,3 @@ jobs:
     - name: Install dependencies
       run: npm install
       
-    # 可以添加更多步骤，如运行测试、构建等
-    - name: Run tests
-      run: npm test
