@@ -8,11 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
-      OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
-      OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
-      OSS_BUCKET_PATH: oss://timo-test/test
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -36,7 +32,7 @@ jobs:
           sudo mv ossutil64 /usr/local/bin/ossutil
 
       - name: Config ossutil
-        run: ossutil config -e $OSS_ENDPOINT -i $OSS_ACCESS_KEY_ID -k $OSS_ACCESS_KEY_SECRET -L CH
+        run: ossutil config -e ${{ PRE_US_OSS_ENDPOINT_YYK }} -i ${{ secrets.PRE_OSS_AK_YYK }} -k ${{ secrets.PRE_OSS_SK_YYK }} -L CH
 
       - name: Add Serverless Devs configuration
         run: |
@@ -45,4 +41,8 @@ jobs:
 
       - name: Deploy to Function Compute
         run: s deploy -y --use-local
-        
+        env:
+          OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
+          OSS_ENDPOINT: ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}
+          OSS_BUCKET_PATH: oss://timo-test/test
