@@ -47,7 +47,6 @@ jobs:
           s deploy -y --use-local
         env:
           NPM_CONFIG_USERCONFIG: /home/runner/work/_temp/.npmrc
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         #env:
          # OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
          # OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
