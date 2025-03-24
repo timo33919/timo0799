@@ -24,7 +24,7 @@ jobs:
           npm install -g @serverless-devs/s
 
       - name: Configure Alibaba Cloud Credentials
-        uses: aliyun/configure-aliyun-credentials@v1.0.0
+        uses: aliyun/configure-aliyun-credentials@v2
         with:
           access-key-id: ${{ secrets.PRE_OSS_AK_YYK }}
           access-key-secret: ${{ secrets.PRE_OSS_SK_YYK }}
