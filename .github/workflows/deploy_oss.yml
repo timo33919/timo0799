@@ -22,7 +22,7 @@ jobs:
         run: |
           npm install
           npm install -g @serverless-devs/s
-          npm run docs:build
+          npm run t1:build
 
       - name: Install ossutil
         run: |
@@ -34,7 +34,7 @@ jobs:
           ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
           ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
         run: |
-          ossutil cp -r ./app.py oss://timo-test/test --access-key-id=$ACCESS_KEY_ID --access-key-secret=$ACCESS_KEY_SECRET --endpoint=ap-southeast-1.aliyuncs.com
+          ossutil cp -r ./app.py oss://timo-test/test/ --access-key-id=$ACCESS_KEY_ID --access-key-secret=$ACCESS_KEY_SECRET --endpoint=ap-southeast-1.aliyuncs.com
 
      
 
