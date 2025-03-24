@@ -45,8 +45,7 @@ jobs:
           echo "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" >> .env
           echo "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}" >> .env
           s deploy -y --use-local
-        env:
-          NPM_CONFIG_USERCONFIG: /home/runner/work/_temp/.npmrc
+ 
         #env:
          # OSS_ACCESS_KEY_ID: ${{ secrets.PRE_OSS_AK_YYK }}
          # OSS_ACCESS_KEY_SECRET: ${{ secrets.PRE_OSS_SK_YYK }}
