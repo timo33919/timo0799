@@ -24,11 +24,29 @@ jobs:
           npm install -g @serverless-devs/s
 
       - name: Configure Alibaba Cloud Credentials
-        uses: aliyun/configure-aliyun-credentials@v2
+        uses: taixw2/deploy-aliyun-oss@v1
         with:
+          region: ap-southeast-1.aliyuncs.com
           access-key-id: ${{ secrets.PRE_OSS_AK_YYK }}
           access-key-secret: ${{ secrets.PRE_OSS_SK_YYK }}
-          region: ap-southeast-1
+          bucket: oss://timo-test/test
+          secure: true
+          remote-dir: /
+
+
+      - name: Deploy OSS
+        uses: taixw2/deploy-aliyun-oss@v1
+        with:
+          # aliyun config
+          region: ap-southeast-1.aliyuncs.com
+          access-key-id: ${{ secrets.PRE_OSS_AK_YYK }}
+          access-key-secret: ${{ secrets.PRE_OSS_SK_YYK }}
+          bucket: oss://timo-test/test
+          secure: true
+          # deploy config
+          entry: dist/**/* # glob pattern
+          remote-dir: /
+          path-rewrite: ^dist
 
       - name: Add Serverless Devs configuration
         run: s config add --AccessKeyID ${{secrets.PRE_OSS_AK_YYK}} --AccessKeySecret ${{secrets.PRE_OSS_SK_YYK}} -a default -f
