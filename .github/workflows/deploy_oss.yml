@@ -46,3 +46,5 @@ jobs:
             --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
           # 验证配置
           s config get aliyun_access
+          # 测试连接
+          s cli fc3 list --region ap-southeast-1 --access aliyun_access || echo "连接测试失败"
