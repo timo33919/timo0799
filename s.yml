@@ -1,6 +1,8 @@
 edition: 3.0.0
 name: fc3-example
 access: "aliyun_access"
+config:
+  ignoreEnv: true  # 忽略环境文件检查
 resources:
   fcDemo:
     component: fc3
