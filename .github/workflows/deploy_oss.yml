@@ -39,11 +39,19 @@ jobs:
 
       - name: Deploy to Function Compute
         run: |
+          # 显示当前配置
+          s config list
           echo "{}" > env.yaml \
           s deploy -y --use-local \
             --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
             --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" \
             --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
+           # 部署后验证
+          echo "=== 服务列表 ==="
+          s ls --service
+    
+          echo "=== 函数列表 ==="
+          s ls --function
 
 
        
