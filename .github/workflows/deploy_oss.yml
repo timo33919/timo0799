@@ -60,5 +60,6 @@ jobs:
             --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}"
       
           # 检查部署结果
-          s info --service  # 查看服务信息
-          s info --function # 查看函数信息
+          s info --service
+           # 查看函数信息
+          s info --function
