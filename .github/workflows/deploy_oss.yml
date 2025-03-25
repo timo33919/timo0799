@@ -43,7 +43,7 @@ jobs:
           mkdir -p .s
           echo "env: {}" > .s/env.yaml
           echo "{}" > env.yaml \
-          s config get
+          s config get \
           s deploy -y --use-local \
             --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
             --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" \
