@@ -45,7 +45,7 @@ jobs:
       # 上传到OSS（新加坡区域）
       - name: Upload to OSS
         run: |
-           cp app.zip oss://${{ env.OSS_BUCKET }}/${{ env.OSS_CODE_PATH }} --force
+           ossutil cp app.zip oss://${{ env.OSS_BUCKET }}/${{ env.OSS_CODE_PATH }} --force
 
       # 部署函数计算
       - name: Deploy to FC
