@@ -44,7 +44,7 @@ jobs:
            echo "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}" >> .env
            
            cat .env
-           #run: s deploy -y --use-local --env-file .env
+           run: s deploy -y --use-local --env-file .env
 
 
        
