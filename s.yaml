@@ -32,9 +32,9 @@ resources:
         PYTHONPATH: "/opt/python"
         LD_LIBRARY_PATH: "/code:/code/lib"
         # 确保OSS相关变量是字符串格式
-        OSS_ACCESS_KEY_ID: "${{ env.OSS_ACCESS_KEY_ID }}"
-        OSS_ACCESS_KEY_SECRET: "${{ env.OSS_ACCESS_KEY_SECRET }}"
-        OSS_ENDPOINT: "${{ env.OSS_ENDPOINT }}"
+        OSS_ACCESS_KEY_ID: ${env.OSS_ACCESS_KEY_ID}
+        OSS_ACCESS_KEY_SECRET: ${env.OSS_ACCESS_KEY_SECRET}
+        OSS_ENDPOINT: ${env.OSS_ENDPOINT}
         OSS_BUCKET_PATH: "oss://timo-test/test"
       code: ./app.py
       triggers:
