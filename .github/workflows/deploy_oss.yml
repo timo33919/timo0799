@@ -47,18 +47,17 @@ jobs:
           --access aliyun_access \
           --debug || echo "Service may already exist"
       
-      - name: Atomic Deployment
+      - name: Deploy Function
         run: |
-          # 清除旧配置
-          rm -rf .s
-          
-          # 全新部署（禁用缓存）
+          # 确保环境变量是字符串格式
+          export OSS_ACCESS_KEY_ID="${{ secrets.PRE_OSS_AK_YYK }}"
+          export OSS_ACCESS_KEY_SECRET="${{ secrets.PRE_OSS_SK_YYK }}"
+          export OSS_ENDPOINT="${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
+    
+          # 强制全新部署
           s deploy --force --debug 3 \
             --access aliyun_access \
-            --region ap-southeast-1 \
-            --env "OSS_ACCESS_KEY_ID=$(echo '${{ secrets.PRE_OSS_AK_YYK }}' | base64)" \
-            --env "OSS_ACCESS_KEY_SECRET=$(echo '${{ secrets.PRE_OSS_SK_YYK }}' | base64)" \
-            --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
+            --region ap-southeast-1
           
           # 延迟验证
           sleep 15
