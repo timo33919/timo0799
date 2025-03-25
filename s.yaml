@@ -17,6 +17,8 @@ resources:
         ossBucketName: timo-test
         ossObjectName: test/app.zip  # 必须是ZIP格式
       environmentVariables:
+        OSS_ACCESS_KEY_ID: ${env.OSS_ACCESS_KEY_ID}
+        OSS_ACCESS_KEY_SECRET: ${env.OSS_ACCESS_KEY_SECRET}
         OSS_ENDPOINT: ${env.OSS_ENDPOINT}
       triggers:
         - triggerName: http-trigger
