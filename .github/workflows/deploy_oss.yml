@@ -40,8 +40,8 @@ jobs:
       - name: Deploy to Function Compute
         run: |
           # 显示当前配置
-          mkdir -p .s
-          echo "env: {}" > .s/env.yaml
+          #mkdir -p .s
+          #echo "{}" > .s/env.yaml
           echo "{}" > env.yaml \
           s config get \
           s deploy -y --use-local \
