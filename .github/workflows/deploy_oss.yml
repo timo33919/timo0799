@@ -42,7 +42,7 @@ jobs:
           # 显示当前配置
           mkdir -p .s
           echo "env: {}" > .s/env.yaml
-          #echo "{}" > env.yaml \
+          echo "{}" > env.yaml \
           s config get
           s deploy -y --use-local \
             --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
