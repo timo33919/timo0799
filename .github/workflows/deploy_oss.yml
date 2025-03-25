@@ -41,11 +41,11 @@ jobs:
 
       - name: Ensure Service Exists
         run: |
-          s cli fc3 create-service \
-            --service-name fc3-example \
-            --region ap-southeast-1 \
-            --access aliyun_access \
-            --description "Main service container"
+          s cli fc-api createService \
+          --region ap-southeast-1 \
+          --serviceName fc3-example \
+          --access aliyun_access \
+          --debug || echo "Service may already exist"
       
       - name: Atomic Deployment
         run: |
