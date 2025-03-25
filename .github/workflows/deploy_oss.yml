@@ -39,7 +39,7 @@ jobs:
 
       - name: Deploy to Function Compute
         run: |
-          echo "{}" > env.yaml \
+          echo "{}" > env.yaml
           s deploy -y --use-local \
             --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
             --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" \
