@@ -19,8 +19,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-      - uses: actions/checkout@v4
-      - run: |
+      
+        run: |
           npm install
           npm install -g @serverless-devs/s
 
