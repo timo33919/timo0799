@@ -21,7 +21,7 @@ resources:
         port: 9000
         command:
           - python3
-          - index.py
+          - app.py
       functionName: timo-flask-4
       runtime: custom.debian10
       cpu: 0.35
