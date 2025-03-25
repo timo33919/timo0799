@@ -49,3 +49,16 @@ jobs:
           # 测试连接
           #s cli fc3 list --region ap-southeast-1 --access aliyun_access || echo "连接测试失败"
           #s cli fc3 info --region ap-southeast-1 --function-name  timo-flask-1 -a aliyun_access || echo "测试连接失败"
+
+      - name: Debug deployment
+        run: |
+          # 显示详细部署信息
+          s deploy --debug \
+            --access aliyun_access \
+            --region ap-southeast-1 \
+            --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
+            --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}"
+      
+          # 检查部署结果
+          s info --service  # 查看服务信息
+          s info --function # 查看函数信息
