@@ -1,54 +1,28 @@
 edition: 3.0.0
-name: fc3-example
-access: "aliyun_access"
+name: fc-singapore-oss
+access: "aliyun_access"  # 确保已配置新加坡区域的AK/SK
+
 resources:
   fcDemo:
     component: fc3
     props:
-      region: ap-southeast-1
-      handler: index.handler
-      role: ''
-      disableOndemand: false
-      description: ''
-      timeout: 60
-      diskSize: 512
-      internetAccess: true
-      layers:
-        - acs:fc:ap-southeast-1:official:layers/Python3-Flask2x/versions/2
-      customRuntimeConfig:
-        port: 9000
-        command:
-          - python3
-          - app.py
-      functionName: timo-flask-4
-      runtime: custom.debian10
-      cpu: 0.35
-      instanceConcurrency: 20
+      region: ap-southeast-1  # 新加坡区域
+      functionName: oss-python-function
+      runtime: python3.10    # 根据实际需求选择运行时
+      handler: app.handler    # 假设app.py中有handler函数
       memorySize: 512
+      timeout: 60
+      # 直接从OSS加载代码（需为ZIP包）
+      code:
+        ossBucketName: timo-test
+        ossObjectName: test/app.zip  # 必须是ZIP格式
       environmentVariables:
-        PATH: >-
-          /var/fc/lang/python3.10/bin:/usr/local/bin/apache-maven/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ruby/bin:/opt/bin:/code:/code/bin
-        PYTHONPATH: /opt/python:/
-        LD_LIBRARY_PATH: >-
-          /code:/code/lib:/usr/local/lib:/opt/lib:/opt/php8.1/lib:/opt/php8.0/lib:/opt/php7.2/lib
-        # 新增OSS相关配置
-
-        OSS_ACCESS_KEY_ID: ${env.OSS_ACCESS_KEY_ID}
-        OSS_ACCESS_KEY_SECRET: ${env.OSS_ACCESS_KEY_SECRET}
         OSS_ENDPOINT: ${env.OSS_ENDPOINT}
-        OSS_BUCKET_PATH: oss://timo-test/test
-      code: ./app.py
       triggers:
-        - triggerConfig:
+        - triggerName: http-trigger
+          triggerType: http
+          triggerConfig:
+            authType: anonymous
             methods:
               - GET
               - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-            authType: anonymous
-            disableURLInternet: false
-          triggerName: defaultTrigger
-          description: ''
-          qualifier: LATEST
-          triggerType: http
