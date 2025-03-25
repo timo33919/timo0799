@@ -35,24 +35,12 @@ jobs:
       - name: Add Serverless Devs configuration
         run: |
          s config add --AccessKeyID ${{ secrets.PRE_OSS_AK_YYK }} --AccessKeySecret ${{ secrets.PRE_OSS_SK_YYK }} -a aliyun_access -f
-         ossutil ls oss://timo-test/test
+         #ossutil ls oss://timo-test/test
 
       - name: Deploy to Function Compute
         run: |
-          # 显示当前配置
           echo "{}" > env.yaml \
-          s config get \
           s deploy -y --use-local \
             --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
             --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" \
             --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
-           # 部署后验证
-          echo "=== 服务列表 ==="
-          s ls --service
-    
-          echo "=== 函数列表 ==="
-          s ls --function
-
-
-       
-
