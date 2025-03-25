@@ -25,10 +25,8 @@ def init_invoke():
 
 
 @app.route("/invoke", methods=["POST"])
-def event_invoke():
-  
-
-    return "hello world!"
+def handler(event, context):
+    return "Hello from OSS!"():
 
 
 if __name__ == "__main__":
