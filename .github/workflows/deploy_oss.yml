@@ -12,11 +12,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # 配置阿里云新加坡区域凭证
       - name: Configure Alibaba Cloud Credentials
-        uses: aliyun/configure-aliyun-credentials@v1
+        uses: aliyun/configure-aliyun-credentials-action@v1
         with:
           access-key-id: ${{ secrets.PRE_OSS_AK_YYK }}
           access-key-secret: ${{ secrets.PRE_OSS_SK_YYK }}
