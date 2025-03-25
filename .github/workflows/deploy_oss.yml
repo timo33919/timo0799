@@ -38,7 +38,7 @@ jobs:
       # 打包app.py为ZIP（阿里云FC要求代码必须为ZIP）
       - name: Package Python code
         run: |
-          apt install zip -y
+          sudo apt install zip -y
           zip app.zip ${{ env.PYTHON_SOURCE_FILE }}  # 将app.py打包为app.zip
           ls -lh
 
