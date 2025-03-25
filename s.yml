@@ -39,7 +39,7 @@ resources:
         OSS_ACCESS_KEY_SECRET: ${env.OSS_ACCESS_KEY_SECRET}
         OSS_ENDPOINT: ${env.OSS_ENDPOINT}
         OSS_BUCKET_PATH: oss://timo-test/test
-      code: ./index.py
+      code: ./app.py
       triggers:
         - triggerConfig:
             methods:
