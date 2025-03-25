@@ -1,47 +1,40 @@
 name: Deploy to Alibaba OSS
-
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+
+env:
+  OSS_BUCKET: timo-test
+  OSS_CODE_PATH: test/app.zip  # OSS中的ZIP路径
+  PYTHON_SOURCE_FILE: app.py   # 本地Python文件
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      # 配置阿里云新加坡区域凭证
+      - name: Configure Alibaba Cloud Credentials
+        uses: aliyun/configure-aliyun-credentials@v1
         with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
+          access-key-id: ${{ secrets.PRE_OSS_AK_YYK }}
+          access-key-secret: ${{ secrets.PRE_OSS_SK_YYK }}
+          region-id: ap-southeast-1  # 新加坡区域
 
-      - name: Install dependencies
-      
+      # 打包app.py为ZIP（阿里云FC要求代码必须为ZIP）
+      - name: Package Python code
         run: |
-          npm install
-          npm install -g @serverless-devs/s
+          zip app.zip ${{ env.PYTHON_SOURCE_FILE }}  # 将app.py打包为app.zip
+          ls -lh
 
-      - name: Install osutil
+      # 上传到OSS（新加坡区域）
+      - name: Upload to OSS
         run: |
-          wget http://gosspublic.alicdn.com/ossutil/1.7.1/ossutil64 -O ossutil64
-          chmod +x ossutil64
-          sudo mv ossutil64 /usr/local/bin/ossutil
+          aliyun oss cp app.zip oss://${{ env.OSS_BUCKET }}/${{ env.OSS_CODE_PATH }} --force
 
-      - name: Config ossutil
-        run: ossutil config -e ${{ secrets.PRE_US_OSS_ENDPOINT_YYK }} -i ${{ secrets.PRE_OSS_AK_YYK }} -k ${{ secrets.PRE_OSS_SK_YYK }} -L CH
-
-      - name: Add Serverless Devs configuration
-        run: |
-         s config add --AccessKeyID ${{ secrets.PRE_OSS_AK_YYK }} --AccessKeySecret ${{ secrets.PRE_OSS_SK_YYK }} -a aliyun_access -f
-         #ossutil ls oss://timo-test/test
-
-      - name: Deploy to Function Compute
-        run: |
-          echo "{}" > env.yaml \
-          s deploy -y --use-local --debug \
-            --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
-            --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" \
-            --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}" 
+      # 部署函数计算
+      - name: Deploy to FC
+        run: s deploy --use-local -y
+        env:
+          OSS_ENDPOINT: oss-ap-southeast-1.aliyuncs.com  # 新加坡OSS Endpoint
