@@ -37,27 +37,14 @@ jobs:
          s config add --AccessKeyID ${{ secrets.PRE_OSS_AK_YYK }} --AccessKeySecret ${{ secrets.PRE_OSS_SK_YYK }} -a aliyun_access -f
          #ossutil ls oss://timo-test/test
 
-
-
-      - name: Ensure Service Exists
+      - name: Deploy to Function Compute
         run: |
-          s cli fc-api createService \
-          --region ap-southeast-1 \
-          --serviceName fc3-example \
-          --access aliyun_access \
-          --debug || echo "Service may already exist"
-      
-      - name: Deploy Function
-        run: |
-          # 确保环境变量是字符串格式
-          export OSS_ACCESS_KEY_ID="${{ secrets.PRE_OSS_AK_YYK }}"
-          export OSS_ACCESS_KEY_SECRET="${{ secrets.PRE_OSS_SK_YYK }}"
-          export OSS_ENDPOINT="${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
-    
-          # 强制全新部署
-          s deploy --force --debug 3 \
-            --access aliyun_access \
-            --region ap-southeast-1
+          echo "{}" > env.yaml \
+          s deploy -y --use-local \
+            --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
+            --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" \
+            --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
+
           
           # 延迟验证
           sleep 15
