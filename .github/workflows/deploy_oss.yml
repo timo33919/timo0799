@@ -37,24 +37,10 @@ jobs:
          s config add --AccessKeyID ${{ secrets.PRE_OSS_AK_YYK }} --AccessKeySecret ${{ secrets.PRE_OSS_SK_YYK }} -a aliyun_access -f
          #ossutil ls oss://timo-test/test
 
-      - name: Deploy preparation
+      - name: Deploy to Function Compute
         run: |
-          # 创建标准配置目录
-          mkdir -p .s
-          echo "env: {}" > .s/env.yaml
-    
-          # 验证配置
-          s config get aliyun_access
-    
-      - name: Deploy function
-        run: |
+          echo "{}" > env.yaml \
           s deploy -y --use-local \
-            --access aliyun_access \
             --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
             --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" \
-            --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}" \
-            --debug
-    
-          # 查询部署结果
-          s info --service --debug
-          s info --function --debug
+            --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
