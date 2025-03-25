@@ -44,4 +44,4 @@ jobs:
             --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
             --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" \
             --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
-          s cli fc3 info --region ap-southeast-1 --function-name  timo-flask-1 -a aliyun_access || echo "测试连接失败"
+          #s cli fc3 info --region ap-southeast-1 --function-name  timo-flask-1 -a aliyun_access || echo "测试连接失败"
