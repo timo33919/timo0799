@@ -47,8 +47,10 @@ jobs:
         run: |
            ossutil cp app.zip oss://${{ env.OSS_BUCKET }}/${{ env.OSS_CODE_PATH }} --force
 
-      # 部署函数计算
-      - name: Deploy to FC
-        run: s deploy --use-local -y
-        env:
-          OSS_ENDPOINT: oss-ap-southeast-1.aliyuncs.com  # 新加坡OSS Endpoint
+      - name: Deploy to Function Compute
+        run: |
+          echo "{}" > env.yaml \
+          s deploy -y --use-local \
+            --env "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" \
+            --env "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" \
+            --env "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}"
