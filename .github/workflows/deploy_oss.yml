@@ -38,11 +38,10 @@ jobs:
          ossutil ls oss://timo-test/test
 
       - name: Deploy to Function Compute
-        run: |
+        run: | 
            echo "OSS_ACCESS_KEY_ID=${{ secrets.PRE_OSS_AK_YYK }}" > .env
            echo "OSS_ACCESS_KEY_SECRET=${{ secrets.PRE_OSS_SK_YYK }}" >> .env
            echo "OSS_ENDPOINT=${{ secrets.PRE_US_OSS_ENDPOINT_YYK }}" >> .env
-           
            cat .env
            run: s deploy -y --use-local --env-file .env
 
